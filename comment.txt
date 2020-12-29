@@ -1,0 +1,76 @@
+〇 目的：React App を例に Docker を使用した Workflow を構築する
+
+
+☆☆☆ From Scratch（以下の流れで作業をしてレポジトリを参考に各ファイルを作成する）☆☆☆
+
+(1)
+「create-react-app <ProjectName>」でReactAppのテンプレートを作成
+・「npm run start」→ dev 用のアプリスタート
+・「npm run test」→ テストスタート
+・「npm run build」→ prod 用のファイルを「/build」ディレクトリに出力
+
+(2-1: Dev)
+dev用に「Dockerfile.dev」を作成
+dev用に「docker-compose.yml」を作成（扱うコンテナが1個の場合でも docker-compose を使用してよい）
+
+----------START docker-compose.yml---
+version: '3'
+services:
+  web:
+    build:                        # ビルド時にデフォルトである Dockerfile を使用しない場合は以下の記述が必要
+      context: .			            # ビルドに使用するディレクトリを指定
+      dockerfile: Dockerfile.dev	# 使用する Dockerfile を指定
+    ports:
+      - "3000:3000"			          # ポートマッピング
+    volumes:
+      - /app/node_modules		      # node_modulesはコンテナのみに存在させる (コンテナ起動時に npm install する) ので Docker Volume の対象から外す
+      - .:/app				            # Docker Volume としてコンテナの「/app」がローカルの「.」を参照するように設定
+    stdin_open: true 			        # docker-compose が create-react-app に対応していないバグがあるようなのでその対処
+    environment:
+      - CHOKIDAR_USEPOLLING=true	# ローカルの変更をホットリロードでコンテナ内に反映できるようにする
+----------END docker-compose.yml---
+
+・「docker-compose up」コンテナをビルドして起動する → ローカルサーバーが起動
+・「docker-compose up --build」コンテナをリビルドして起動する → ローカルサーバーが起動
+・「docker-compose down」コンテナをストップして削除する
+
+→ 満足いくまで開発を行う
+
+(2-2: Test)
+テストを実行したい場合は以下を実行する
+1.「docker-compose up」コンテナをビルドして起動した状態にしておく
+2. 別のターミナルを開き「docker ps」で起動中のコンテナのIDを確認
+3.「docker exec -it <ContainerID> npm run test」でテストを実行（起動済みコンテナの内部で npm run test を実行）
+※ Windowsだと駄目らしいが、本当ならローカルの変更をホットリロードでコンテナ内に反映して自動的にテストをやり直してくれる
+
+(2-3: Prod)
+※「npm run build」で prod 用のファイルを「/build」ディレクトリに出力するとしても、それらを提供するWebサーバーが必要。
+　→ nginx の Docker Image を使用！
+　→ 必要なのは「/build」内のファイルだけ。それ以外は全部要らない。それだけをnginxにコピーする。
+
+prod用に「Dockerfile」を作成
+
+----------START Dockerfile---
+
+# 以下マルチステージビルド
+#「npm run build」で prod 用のファイルを「/build」ディレクトリに出力する
+
+FROM node:alpine
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+#「/build」ディレクトリの中身を nginx にコピーする
+# 以下は公式ドキュメントに則って記述（https://hub.docker.com/_/nginx）
+# nginx Image のスタートアップコマンドは「start nginx」なのでわざわざ記述する必要は無い
+
+FROM nginx
+COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージでビルドされた成果物をこの新しいステージへコピー
+
+----------END Dockerfile---
+
+・「docker build .」→「Dockerfile」を使用してビルドを行う
+・「docker run -p 8080:80 <ContainerID>」→ コンテナを作成して起動（ローカルホストのポート8080をコンテナのポート80にマッピング（80はhttpプロトコル用のポート番号））
+					 → http://localhost:8080/ にアクセスすると prod用のページが表示される
