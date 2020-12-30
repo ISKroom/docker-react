@@ -7,7 +7,7 @@ services:
 
 # scriptを実行する前に以下を実行
 before_install:
-  - docker build -t iskroom/docker-raect -f Dockerfile.dev .
+  - docker build -t iskroom/docker-react -f Dockerfile.dev .
 
 # 以下コマンドを実行
 # TravisCIはコマンド実行結果の Status Code が 0 以外だった場合は失敗と判断する
