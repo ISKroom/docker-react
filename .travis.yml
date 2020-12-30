@@ -1,0 +1,16 @@
+language: generic
+sudo: required  # 管理者権限を指定
+
+# まず TravisCI に Docker をインストール
+services:
+  - docker
+
+# scriptを実行する前に以下を実行
+before_install:
+  - docker build -t ISKroom/docker-raect -f Dockerfile.dev .
+
+# 以下コマンドを実行
+# TravisCIはコマンド実行結果の Status Code が 0 以外だった場合は失敗と判断する
+# TravisCIは script が終了したら自動で exit するように期待しているので -e を入れておく
+script:
+  - docker run -e CI=true ISKroom/docker-react npm run test

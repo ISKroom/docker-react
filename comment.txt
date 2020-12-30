@@ -74,3 +74,8 @@ COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージ�
 ・「docker build .」→「Dockerfile」を使用してビルドを行う
 ・「docker run -p 8080:80 <ContainerID>」→ コンテナを作成して起動（ローカルホストのポート8080をコンテナのポート80にマッピング（80はhttpプロトコル用のポート番号））
 					 → http://localhost:8080/ にアクセスすると prod用のページが表示される
+
+(2-4)
+Travis CI でレポジトリを有効にする https://travis-ci.org/
+.travis.yml を作成
+GitHubにpushしたらTravisCIが自動で検知して .travis.yml に記載の処理を実行 → 結果をレポートする
