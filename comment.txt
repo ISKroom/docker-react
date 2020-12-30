@@ -118,4 +118,4 @@ TravisCIにAWSリソースにアクセスする権限を設定
     git commit -m "hoge"
     git push origin feature
 2. Githubのレポジトリページに行くとpushの通知があるはずなので、「Compare & pull request」をクリック
-3. マージ先のブランチ（今回はmasterブランチ）を選択して、変更箇所をメッセージに書くなりしたら「Create puu request」をクリック
+3. マージ先のブランチ（今回はmasterブランチ）を選択して、変更箇所をメッセージに書くなりしたら「Create puu request」をクリック!

@@ -12,8 +12,8 @@ before_install:
 # 以下コマンドを実行
 # TravisCIはコマンド実行結果の Status Code が 0 以外だった場合は失敗と判断する
 # TravisCIは script が終了したら自動で exit するように期待しているので -e を入れておく
-script:
-  - docker run -e CI=true iskroom/docker-react npm run test
+# script:
+#   - docker run -e CI=true iskroom/docker-react npm run test
 
 # 以下コマンドを実行
 # AWSにデプロイ
