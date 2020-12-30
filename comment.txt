@@ -67,6 +67,7 @@ RUN npm run build
 # nginx Image のスタートアップコマンドは「start nginx」なのでわざわざ記述する必要は無い
 
 FROM nginx
+EXPOSE 80 # Elastic Beanstalk がマッピングしてくれる
 COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージでビルドされた成果物をこの新しいステージへコピー
 
 ----------END Dockerfile---
@@ -83,7 +84,7 @@ GitHubにpushしたらTravisCIが自動で検知して .travis.yml に記載の�
 ※2021年以降は GitHub App でレポジトリを有効にする必要があるっぽい（https://docs.travis-ci.com/user/migrate/open-source-repository-migration#migrating-a-repository）
 
 (2-5)
-AWSでElastic Beanstalkを作成（https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/20676694#content）（64bit Amazon Linuxを使用することに注意）
+AWSでElastic Beanstalkを作成（https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/20676694#content）（64bit Amazon Linuxを使用することに注意→Dockerfileでビルドする。ver2だとdocker-composeでビルドしようとする）
 ※When creating our Elastic Beanstalk environment in the next lecture, we need to select Docker running on 64bit Amazon Linux instead of Docker running on 64bit Amazon Linux 2. This will ensure that our container is built using the Dockerfile and not the compose file.
 
 1. Go to AWS Management Console
