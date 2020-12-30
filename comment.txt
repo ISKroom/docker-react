@@ -116,7 +116,7 @@ TravisCIにAWSリソースにアクセスする権限を設定
     git commit -m "hoge"
     git push origin feature
 2. Githubのレポジトリページに移動して master ← feature で pull request
-3. TravisCIが自動でテストを実行する（パスしなかったらも失敗するので要チェック）
+3. TravisCIが自動でテストを実行する（パスしなかったらも失敗するので要チェック）（pull request しないとTravisCIは起動しない）
 4. pull requestをマージする → masterブランチへのpushと同義なのでTravisCIをトリガーしてTestingとAWSへのデプロイを開始する
 
 (3：Elastic Beanstalk の削除)
