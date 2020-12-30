@@ -51,7 +51,6 @@ services:
 prod用に「Dockerfile」を作成
 
 ----------START Dockerfile---
-
 # 以下マルチステージビルド
 #「npm run build」で prod 用のファイルを「/build」ディレクトリに出力する
 
@@ -69,12 +68,11 @@ RUN npm run build
 FROM nginx
 EXPOSE 80 # Elastic Beanstalk がマッピングしてくれる
 COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージでビルドされた成果物をこの新しいステージへコピー
-
 ----------END Dockerfile---
 
 ・「docker build .」→「Dockerfile」を使用してビルドを行う
 ・「docker run -p 8080:80 <ContainerID>」→ コンテナを作成して起動（ローカルホストのポート8080をコンテナのポート80にマッピング（80はhttpプロトコル用のポート番号））
-					 → http://localhost:8080/ にアクセスすると prod用のページが表示される
+	→ http://localhost:8080/ にアクセスすると prod用のページが表示される
 
 (2-4)
 Travis CI でレポジトリを有効にする https://travis-ci.com/
@@ -117,5 +115,14 @@ TravisCIにAWSリソースにアクセスする権限を設定
     git add .
     git commit -m "hoge"
     git push origin feature
-2. Githubのレポジトリページに行くとpushの通知があるはずなので、「Compare & pull request」をクリック
-3. マージ先のブランチ（今回はmasterブランチ）を選択して、変更箇所をメッセージに書くなりしたら「Create puu request」をクリック
+2. Githubのレポジトリページに移動して master ← feature で pull request
+3. TravisCIが自動でテストを実行する（パスしなかったらも失敗するので要チェック）
+4. pull requestをマージする → masterブランチへのpushと同義なのでTravisCIをトリガーしてTestingとAWSへのデプロイを開始する
+
+(3：Elastic Beanstalk の削除)
+1. Go to the Elastic Beanstalk dashboard.
+2. In the left sidebar click "Applications"
+3. Click the application you'd like to delete.
+4. Click the "Actions" button and click "Delete Application"
+5. You will be prompted to enter the name of your application to confirm the deletion.
+Note: it might take a few minutes for the dashboard to update and show that your app is being deleted.  Be a little patient!
