@@ -4,10 +4,19 @@
 ☆☆☆ From Scratch（以下の流れで作業をしてレポジトリを参考に各ファイルを作成する）☆☆☆
 
 (1)
-「create-react-app <ProjectName>」でReactAppのテンプレートを作成
+「npx create-react-app client」でReactAppのテンプレートを作成
 ・「npm run start」→ dev 用のアプリスタート
 ・「npm run test」→ テストスタート
 ・「npm run build」→ prod 用のファイルを「/build」ディレクトリに出力
+
+※ Important Reminder:
+
+Once you have generated the React app you will need to delete the local git repository that Create React App may have automatically initialized.
+
+Inside the newly created client directory, run rm -r .git
+
+If you miss this step, the client folder will be considered a submodule and pushed as an empty folder to GitHub.
+
 
 (2-1: Dev)
 dev用に「Dockerfile.dev」を作成
