@@ -108,3 +108,14 @@ TravisCIにAWSリソースにアクセスする権限を設定
 7. Environment VariablesのNAMEに「AWS_ACCESS_KEY」を入力、VALUEに作成したアクセスキーIDを入力、「DISPLAY VALUE IN BUILD LOG」はチェックしない！ → Addをクリック
 8. Environment VariablesのNAMEに「AWS_SECRET_KEY」を入力、VALUEに作成したシークレットアクセスキーを入力、「DISPLAY VALUE IN BUILD LOG」はチェックしない！ → Addをクリック
 9. .travis.yml にAPIキーの記述を追加
+
+→ GithubにpushするとTravisCIが自動でTestingとDeployをするようになる
+
+(2-7：pullリクエストのフロー作成)
+1. featureブランチを作成してpush
+    git checkout -b feature
+    git add .
+    git commit -m "hoge"
+    git push origin feature
+2. Githubのレポジトリページに行くとpushの通知があるはずなので、「Compare & pull request」をクリック
+3. マージ先のブランチ（今回はmasterブランチ）を選択して、変更箇所をメッセージに書くなりしたら「Create puu request」をクリック
