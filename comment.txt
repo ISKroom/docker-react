@@ -76,6 +76,34 @@ COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージ�
 					 → http://localhost:8080/ にアクセスすると prod用のページが表示される
 
 (2-4)
-Travis CI でレポジトリを有効にする https://travis-ci.org/
+Travis CI でレポジトリを有効にする https://travis-ci.com/
 .travis.yml を作成
-GitHubにpushしたらTravisCIが自動で検知して .travis.yml に記載の処理を実行 → 結果をレポートする
+GitHubにpushしたらTravisCIが自動で検知して .travis.yml に記載の処理を実行 → 結果をレポートする(https://travis-ci.com/ のダッシュボードで)
+
+※2021年以降は GitHub App でレポジトリを有効にする必要があるっぽい（https://docs.travis-ci.com/user/migrate/open-source-repository-migration#migrating-a-repository）
+
+(2-5)
+AWSでElastic Beanstalkを作成（https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/20676694#content）（64bit Amazon Linuxを使用することに注意）
+※When creating our Elastic Beanstalk environment in the next lecture, we need to select Docker running on 64bit Amazon Linux instead of Docker running on 64bit Amazon Linux 2. This will ensure that our container is built using the Dockerfile and not the compose file.
+
+1. Go to AWS Management Console
+2. Search for Elastic Beanstalk in "Find Services"
+3. Click the "Create Application" button
+4. Enter "docker" for the Application Name
+5. Scroll down to "Platform" and select "Docker" from the dropdown list.
+6. Change "Platform Branch" to Docker running on 64bit Amazon Linux
+7. Click "Create Application"
+8. You should see a green checkmark after some time.
+9. Click the link above the checkmark for your application. This should open the application in your browser and display a Congratulations message.
+
+(2-6)
+TravisCIにAWSリソースにアクセスする権限を設定
+1. IAMサービスへ移動
+2.「ユーザーを追加」をクリック
+3. ユーザー名を入力して、「プログラムによるアクセス」「AWS マネジメントコンソールへのアクセス」をチェック（パスワードのリセットは別にいいか）→ 次のステップ
+4.「既存のポリシーを直接アタッチ」を選択 → 「AWSElasticBeanstalkFullAccess」をチェック → 次のステップ → 次のステップ → ユーザーの作成
+5. 作成したユーザー用にAPIキーが作成されるのでメモ（シークレットアクセスキーはこの画面に一度しか表示されないので注意！）
+6. TravisCIのレポジトリページに移動 → Settings に移動
+7. Environment VariablesのNAMEに「AWS_ACCESS_KEY」を入力、VALUEに作成したアクセスキーIDを入力、「DISPLAY VALUE IN BUILD LOG」はチェックしない！ → Addをクリック
+8. Environment VariablesのNAMEに「AWS_SECRET_KEY」を入力、VALUEに作成したシークレットアクセスキーを入力、「DISPLAY VALUE IN BUILD LOG」はチェックしない！ → Addをクリック
+9. .travis.yml にAPIキーの記述を追加

@@ -14,3 +14,17 @@ before_install:
 # TravisCIは script が終了したら自動で exit するように期待しているので -e を入れておく
 script:
   - docker run -e CI=true iskroom/docker-react npm run test
+
+# 以下コマンドを実行
+# AWSにデプロイ
+deploy:
+  provider: elasticbeanstalk  # TravisCI が自動で AWS Elastic Beanstalk にリーチしてくれる
+  region: "us-east-2"         # Elastic Beanstalk を作成した Region を指定
+  app: "docker-react"         # アプリケーション名
+  env: "DockerReact-env"      # Elastic Beanstalk の環境名
+  bucket_name: "elasticbeanstalk-us-east-2-288341566704" # Elastic Beanstalk を作成したときに同時に作成された S3 の名前
+  bucket_path: "docker-react" # 最初はデプロイするまで存在しないフォルダだけど、基本的にアプリケーション名と同じで良い
+  on:
+    branch: master            # master ブランチに push があったときのみデプロイする
+  access_key_id: "$AWS_ACCESS_KEY"      # IAMで作成したユーザーに割り当てられたアクセスキー
+  secret_access_key: "$AWS_SECRET_KEY"  # IAMで作成したユーザーに割り当てられたシークレットアクセスキー
