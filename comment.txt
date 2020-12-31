@@ -76,7 +76,7 @@ RUN npm run build
 
 FROM nginx
 EXPOSE 80 # Elastic Beanstalk がマッピングしてくれる
-COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージでビルドされた成果物をこの新しいステージへコピー
+COPY --from=0 /app/build /usr/share/nginx/html	# --from=0 で前のステージでビルドされた成果物をこの新しいステージへコピー(/app/build の中身だけをnginxコンテナにコピーしていることに注意)
 ----------END Dockerfile---
 
 ・「docker build .」→「Dockerfile」を使用してビルドを行う
